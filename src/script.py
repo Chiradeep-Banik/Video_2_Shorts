@@ -1,3 +1,5 @@
+#!/home/banik/Desktop/Code/Vid_2_Shorts/venv/bin/python3.10
+
 from moviepy.editor import VideoFileClip,clips_array, AudioFileClip
 import moviepy.video.fx.all as vfx
 import os
@@ -8,11 +10,9 @@ mine_path = "../video/minecraft.mp4"
 output_path = "../output"
 
 main_video = VideoFileClip(video_path,target_resolution=(1080,960))
-main_audio = AudioFileClip(video_path)
-bottom_video = VideoFileClip(mine_path,audio=None,target_resolution=(960,1080)).subclip(0, 29)
+bottom_video = VideoFileClip(mine_path,audio=None,target_resolution=(960,1080)).subclip(120, 179)
 print(main_video.duration)
 print(bottom_video.duration)
-print(main_audio.duration)
 
 duration = int(main_video.duration)
 timings = []
@@ -20,6 +20,7 @@ for i in range(0,duration,60):
     start,end = i,i+59
     if end < main_video.duration:
         timings.append([start,end])
+
 
 def remove_mp3_files(directory="."):
     """
@@ -42,14 +43,11 @@ def remove_mp3_files(directory="."):
         file_path = os.path.join(current_directory, mp3_file)
         os.remove(file_path)
 
-
-
 # target_resolution=(1920,1080)
 
-def process_clip(start, end, main_video,main_audio,bottom_video, output_path,speed_factor=2):
+def process_clip(start, end, main_video,bottom_video, output_path,speed_factor=2):
     print(f'Doing this : {start}-{end}')
     top_clip = main_video.subclip(start, end)
-    top_audio = main_audio.subclip(start, end)
     bottom_clip = bottom_video
 
     clips = [[top_clip],[bottom_clip]]
@@ -90,16 +88,17 @@ def create_final(temp_video_path,final_audio_path,result_path):
     video.write_videofile(result_path)
 
 
+i = 1
 for start,end in timings:
-    temp_video_path = process_clip(start,end,main_video,main_audio,bottom_video,output_path,2)
+    temp_video_path = process_clip(start,end,main_video,bottom_video,output_path,2)
     print(temp_video_path)
     final_audio_path = process_audio(start,end,temp_video_path,2)
     print(final_audio_path)
-    final_path = os.path.join(output_path,f'video_from_{start}_{end}_clip.mp4')
+    final_path = os.path.join(output_path,f'Econometric_Lecture_clip_{i}.mp4')
     create_final(temp_video_path,final_audio_path,final_path)
     os.remove(temp_video_path)
     remove_mp3_files()
-    
+    i += 1
     
     
 
